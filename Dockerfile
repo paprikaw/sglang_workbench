@@ -21,6 +21,7 @@ APT_PKGS=(
     iputils-ping
     iperf3
     openssh-server
+    sshpass
 )
 apt-get install -y "${APT_PKGS[@]}"
 EOF
