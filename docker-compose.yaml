@@ -37,9 +37,6 @@ services:
   sg-head:
     <<: *common_settings
     container_name: sg-head
-    ports:
-      - "8265:8265"
-      - "8000:8000"
     networks:
       - ray_network
     entrypoint: /root/sglang_workbench/entrypoint.sh
