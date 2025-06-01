@@ -1,0 +1,62 @@
+version: "3.8"
+
+# 定义一个 mapping（而非 list），用来存公共环境变量
+x-common-env: &common_env
+  # NCCL_DEBUG: "INFO"
+  CUDA_MPS_PPE_DIRECTORY: "/tmp/nvidia-mps"
+  # VLLM_LOGGING_LEVEL: "DEBUG"
+  # VLLM_TRACE_FUNCTION: "1"
+  VLLM_PIPELINE_MEMORY_LIMIT: "24GB,24GB"
+  CONFIG_NAME: "2P-G20:80-V24G:24G"
+  COMPOSE_RUNNING_MODE: "DEV"
+
+# 公共服务配置，不再包含 environment 字段
+x-common: &common_settings
+  image: localhost/sglang-cluster:1.0
+  devices:
+    - "nvidia.com/gpu=all"
+  volumes:
+    - /mnt/4180-llm/huggingface:/root/.cache/huggingface
+    - /tmp/nvidia-mps:/tmp/nvidia-mps
+    - "/dev/shm:/dev/shm"
+    - "/home/student.unimelb.edu.au/bxb1/GPU_benchmark:/root/GPU_benchmark"
+    - /home/student.unimelb.edu.au/bxb1/sglang_workbench/logs:/root/sglang_workbench/logs
+    - /home/student.unimelb.edu.au/bxb1/.ssh:/root/.ssh
+  cap_add:
+    - ALL
+  security_opt:
+    - label=disable
+  # To resolve resource unavailable issue:
+  # https://github.com/containers/podman/issues/17647 
+  pids_limit: -1 
+networks:
+  ray_network:
+    driver: bridge
+
+services:
+  head:
+    <<: *common_settings
+    container_name: head
+    ports:
+      - "8265:8265"
+      - "8000:8000"
+    networks:
+      - ray_network
+    entrypoint: /root/sglang_workbench/entrypoint.sh
+    environment:
+      <<: *common_env                  # 先把公共的全量拉进来
+      ROLE: "head"
+      CUDA_MPS_ACTIVE_THREAD_PERCENTAGE: "20"  # 再追加或覆盖单个变量
+      CUDA_MPS_PINNED_DEVICE_MEM_LIMIT: "0=24GB"
+
+  worker1:
+    <<: *common_settings
+    container_name: worker1
+    networks:
+      - ray_network
+    entrypoint: /root/sglang_workbench/entrypoint.sh
+    environment:
+      <<: *common_env
+      ROLE: "worker"
+      CUDA_MPS_ACTIVE_THREAD_PERCENTAGE: "80"
+      CUDA_MPS_PINNED_DEVICE_MEM_LIMIT: "0=24GB"
