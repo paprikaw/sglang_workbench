@@ -7,6 +7,9 @@ nvidia-smi
 echo "[INFO] 运行自定义 GPU benchmark"
 /root/GPU_benchmark/test
 
+git config --global user.name "BAI Xu"
+git config --global user.email "baixu.must@gmail.com"
+
 tail -f /dev/null
 # if [ "$COMPOSE_RUNNING_MODE" == "EXPERIMENT" ]; then
 #     if [ "$ROLE" == "head" ]; then

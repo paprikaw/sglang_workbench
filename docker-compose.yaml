@@ -34,9 +34,9 @@ networks:
     driver: bridge
 
 services:
-  head:
+  sg-head:
     <<: *common_settings
-    container_name: head
+    container_name: sg-head
     ports:
       - "8265:8265"
       - "8000:8000"
@@ -49,9 +49,9 @@ services:
       CUDA_MPS_ACTIVE_THREAD_PERCENTAGE: "20"  # 再追加或覆盖单个变量
       CUDA_MPS_PINNED_DEVICE_MEM_LIMIT: "0=24GB"
 
-  worker1:
+  sg-worker1:
     <<: *common_settings
-    container_name: worker1
+    container_name: sg-worker1
     networks:
       - ray_network
     entrypoint: /root/sglang_workbench/entrypoint.sh

@@ -6,7 +6,6 @@ WORKDIR /root
 # Firstly download external dataset
 # Install some package
 
-RUN echo "start to build package"
 RUN <<EOF
 #!/bin/bash
 # 添加 iputils-ping 和 iperf3
@@ -24,15 +23,18 @@ APT_PKGS=(
     openssh-server
 )
 apt-get install -y "${APT_PKGS[@]}"
+EOF
 
-# 创建 SSH 运行目录
-mkdir -p /var/run/sshd
 
+RUN <<EOF
+#!/bin/bash
+set -euo pipefail
 # 修改 SSH 配置允许 root 登录
 sed -i 's/^#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # 为 root 设置默认密码（可按需修改）
-echo "root:rootpassword" | chpasswd
+echo "root:123456" | chpasswd
+service ssh restart
 EOF
 
 
