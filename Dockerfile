@@ -96,6 +96,8 @@ RUN --mount=type=cache,id=uv-cache-v1,target=/root/.cache/uv \
 RUN --mount=type=cache,id=uv-cache-v1,target=/root/.cache/uv \
     cd /root/sglang_workbench/sglang && uv pip install --system -e "python[all]" 
 
+RUN --mount=type=cache,id=uv-cache-v1,target=/root/.cache/uv \
+    cd /root/sglang_workbench/sglang && uv pip install --system vllm==0.8.4 
 
 # # 用 bind 挂载宿主日志目录，同时保留 cache mount
 # RUN --mount=type=cache,target=/root/.cache/ccache \

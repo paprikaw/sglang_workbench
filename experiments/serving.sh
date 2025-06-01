@@ -23,13 +23,13 @@ python3 -m sglang.launch_server \
     --nnodes "${NNODES}" \
     --node-rank 0 \
     --disable-cuda-graph \
-    2>&1 | tee "${HEAD_LOG}" &
+    > "${HEAD_LOG}" 2>&1 &
 
 HEAD_PID=$!
 
 # === SSH 到 worker1 上启动 SGLang 服务 ===
 echo "[INFO] SSH 到 sg-worker1 上，启动 SGLang 服务..."
-ssh sg-worker1 bash -c "'
+sshpass -p "123456" ssh sg-worker1 bash -c "'
     set -euo pipefail
     python3 -m sglang.launch_server \
         --model-path \"${MODEL_PATH}\" \
