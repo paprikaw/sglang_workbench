@@ -33,6 +33,12 @@ mkdir -p "${SGLANG_TORCH_PROFILER_DIR_HEAD}"
 mkdir -p "${SGLANG_TORCH_PROFILER_DIR_WORKER1}"
 HEAD_LOG="${LOG_DIR}/sg-head.log"
 WORKER1_LOG="${LOG_DIR}/sg-worker1.log"
+# container之间延迟
+DELAY=0ms
+
+# === 配置tc ===
+export DELAY=${DELAY}
+./tc.sh
 
 
 # === 启动 head 节点 ===

@@ -5,7 +5,7 @@ ARG PYTHON_VERSION=3.12
 WORKDIR /root
 # Firstly download external dataset
 # Install some package
-
+RUN echo "start install packages"
 RUN <<EOF
 #!/bin/bash
 # 添加 iputils-ping 和 iperf3
@@ -22,6 +22,7 @@ APT_PKGS=(
     iperf3
     openssh-server
     sshpass
+    nload
 )
 apt-get install -y "${APT_PKGS[@]}"
 EOF

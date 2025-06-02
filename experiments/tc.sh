@@ -3,7 +3,7 @@
 
 DEV=eth0
 TARGET_IP=$(getent hosts sg-worker1 | awk '{print $1; exit}')
-DELAY="50ms"
+DELAY=${DELAY:-0ms}
 
 echo "[INFO] 清除旧的 tc 规则（如果存在）"
 tc qdisc del dev $DEV root 2>/dev/null
