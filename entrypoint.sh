@@ -11,7 +11,9 @@ git config --global user.name "BAI Xu"
 git config --global user.email "baixu.must@gmail.com"
 
 service ssh restart
-tail -f /dev/null
+
+# Start the daemon that listens for incoming requests to launch sglang.
+python3 /root/sglang_workbench/daemon.py
 # if [ "$COMPOSE_RUNNING_MODE" == "EXPERIMENT" ]; then
 #     if [ "$ROLE" == "head" ]; then
 #         ray start --block --head --port=$RAY_PORT --dashboard-host=0.0.0.0 &
