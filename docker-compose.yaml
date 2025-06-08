@@ -40,9 +40,13 @@ services:
     networks:
       - ray_network
     entrypoint: /root/sglang_workbench/entrypoint.sh
+    ports:
+      - "18000:18000"
     environment:
       <<: *common_env                  # 先把公共的全量拉进来
       ROLE: "head"
+      RANK: "0"
+      DAEMON_PORT: "18000"
       CUDA_MPS_ACTIVE_THREAD_PERCENTAGE: "20"  # 再追加或覆盖单个变量
       CUDA_MPS_PINNED_DEVICE_MEM_LIMIT: "0=24GB"
 
@@ -52,8 +56,12 @@ services:
     networks:
       - ray_network
     entrypoint: /root/sglang_workbench/entrypoint.sh
+    ports:
+      - "18001:18001"
     environment:
       <<: *common_env
       ROLE: "worker"
+      RANK: "1"
+      DAEMON_PORT: "18001"
       CUDA_MPS_ACTIVE_THREAD_PERCENTAGE: "80"
       CUDA_MPS_PINNED_DEVICE_MEM_LIMIT: "0=24GB"
