@@ -12,7 +12,7 @@ x-common-env: &common_env
 
 # 公共服务配置，不再包含 environment 字段
 x-common: &common_settings
-  image: localhost/sglang-cluster:1.0
+  image: localhost/sglang-cluster:2.0
   devices:
     - "nvidia.com/gpu=all"
   volumes:
@@ -20,7 +20,7 @@ x-common: &common_settings
     - /tmp/nvidia-mps:/tmp/nvidia-mps
     - "/dev/shm:/dev/shm"
     - "/home/student.unimelb.edu.au/bxb1/GPU_benchmark:/root/GPU_benchmark"
-    - /home/student.unimelb.edu.au/bxb1/sglang_workbench/logs:/root/sglang_workbench/logs
+    - /home/student.unimelb.edu.au/bxb1/sglang_workbench:/root/sglang_workbench
     - /home/student.unimelb.edu.au/bxb1/.ssh:/root/.ssh
   cap_add:
     - ALL

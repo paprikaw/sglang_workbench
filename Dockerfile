@@ -1,5 +1,5 @@
 # syntax=docker.io/docker/dockerfile:1.7-labs
-FROM nvcr.io/nvidia/cuda:12.2.2-devel-ubuntu22.04 AS localhost/sglang-cluster:1.0
+FROM nvcr.io/nvidia/cuda:12.2.2-devel-ubuntu22.04
 
 ARG PYTHON_VERSION=3.12
 WORKDIR /root
@@ -72,7 +72,7 @@ ENV UV_HTTP_TIMEOUT=500
 ENV UV_LINK_MODE=copy
 
 
-COPY --exclude=.venv --exclude=logs . /root/sglang_workbench
+# COPY --exclude=.venv --exclude=logs . /root/sglang_workbench
 # RUN <<EOF
 # #!/bin/bash
 # set -euo pipefail
@@ -88,9 +88,7 @@ ENV CCACHE_DIR=/root/.cache/ccache \
     CCACHE_STATS_LOG=/root/ccache_logs/ccache.log \
     CCACHE_BASEDIR=/root/sglang_workbench \
     CCACHE_DEBUG=true \
-    CCACHE_NOHASHDIR=true \
-    TORCH_CUDA_ARCH_LIST="8.9" \
-    CMAKE_CUDA_ARCHITECTURES="89"
+    CCACHE_NOHASHDIR=true
 
 RUN --mount=type=cache,id=uv-cache-v1,target=/root/.cache/uv \
     cd /root/sglang_workbench/sglang && uv pip install --system --upgrade pip
@@ -101,33 +99,8 @@ RUN --mount=type=cache,id=uv-cache-v1,target=/root/.cache/uv \
 RUN --mount=type=cache,id=uv-cache-v1,target=/root/.cache/uv \
     cd /root/sglang_workbench/sglang && uv pip install --system vllm==0.8.4 
 
-# # 用 bind 挂载宿主日志目录，同时保留 cache mount
-# RUN --mount=type=cache,target=/root/.cache/ccache \
-#     --mount=type=cache,id=uv-cache-v1,target=/root/.cache/uv \
-#     # --mount=type=bind,source=logs/ccache,target=/root/ccache_logs \
-#     bash <<'EOF'
-# set -euo pipefail -x
-    
-# mkdir -p /root/ccache_logs
-# # 重置统计
-# ccache --zero-stats
-    
-# # 真正的编译
-# cd /root/vllm_workbench/vllm
-# uv pip install --system --no-build-isolation -e .
-
-    
-# # 打印统计和miss记录
-# ccache -s
-# ccache --show-stats
-# echo "—— Missed ——"
-# grep -E "cache miss|called for link|called for preprocessing" "${CCACHE_LOGFILE}" || echo "(none)"
-# EOF
 
 ENTRYPOINT ["/bin/bash"]
-
-# Install vllm from release
-# uv pip install --system https://github.com/vllm-project/vllm/releases/download/v0.8.5.post1/vllm-0.8.5.post1+cu121-cp38-abi3-manylinux1_x86_64.whl
 
 # Install Nsight
 # RUN <<EOF
